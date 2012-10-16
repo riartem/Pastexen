@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>297</width>
-    <height>205</height>
+    <width>380</width>
+    <height>310</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -46,8 +46,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>277</width>
-     <height>151</height>
+     <width>361</width>
+     <height>231</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -57,20 +57,6 @@
     <property name="verticalSpacing">
      <number>4</number>
     </property>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Fullscreen s-shot:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QPushButton" name="fullhotkey">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0">
      <widget class="QLabel" name="labelPassword">
       <property name="text">
@@ -90,6 +76,20 @@
     </item>
     <item row="5" column="1">
      <widget class="QPushButton" name="texthotkey">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Fullscreen s-shot:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QPushButton" name="fullhotkey">
       <property name="text">
        <string/>
       </property>
@@ -149,13 +149,23 @@
       </property>
      </widget>
     </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Window mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QComboBox" name="windowmode"/>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>170</y>
+     <x>70</x>
+     <y>270</y>
      <width>231</width>
      <height>31</height>
     </rect>

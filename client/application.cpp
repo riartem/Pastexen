@@ -99,7 +99,8 @@ void Application::processScreenshot(bool isFullScreen)
 {
     QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
     if (!isFullScreen) {
-        ImageSelectWidget imageSelectDialog(pixmap, true);
+        bool b = _settings->value("general/windowmode", false).toBool();
+        ImageSelectWidget imageSelectDialog(pixmap, b);
         if (!imageSelectDialog.exec())
             return;
     }

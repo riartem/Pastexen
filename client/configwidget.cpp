@@ -63,6 +63,9 @@ void ConfigWidget::showTypes(QString fullHotkey, QString partHotkey, QString tex
     _ui.fullhotkey->setText(fullHotkey);
     _ui.parthotkey->setText(partHotkey);
     _ui.texthotkey->setText(textHotkey);
+
+    _ui.windowmode->addItem(tr("Full screen"), 0);
+    _ui.windowmode->addItem(tr("Show in window"), 1);
 }
 
 
@@ -78,6 +81,7 @@ void ConfigWidget::applyChanges()
     _settings->setValue("general/imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
     _settings->setValue("general/sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
     _settings->setValue("general/showsourcedialog", _ui.checkBoxLangDialogShow->isChecked());
+    _settings->setValue("general/windowmode", _ui.windowmode->itemData(_ui.windowmode->currentIndex()).toInt());
     _settings->sync();
     this->hide();
 }
