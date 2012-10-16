@@ -2,21 +2,34 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QRect>
+#include <QDesktopWidget>
+#include "application.h"
 
-ImageSelectWidget::ImageSelectWidget(QPixmap *source):
+ImageSelectWidget::ImageSelectWidget(QPixmap &source, bool windowMode):
     QDialog(0),
     _source(source)
 {
-    this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Tool);
-    this->setGeometry(0,0,source->width(),source->height());
+    this->setWindowFlags(Qt::WindowStaysOnTopHint/* | Qt::FramelessWindowHint*/ | Qt::Tool);
+    this->setGeometry(0,0,source.width(),source.height());
     this->setCursor(Qt::CrossCursor);
+
+    if (windowMode) {
+        qDebug("windowMode = true");
+        QSize s = qApp->desktop()->size() * 0.9;
+        QSize m = qApp->desktop()->size() * 0.05;
+        move(m.width(), m.height());
+        resize(s);
+        _source = _source.scaled(s, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    } else
+        setWindowState(Qt::WindowFullScreen);
 }
 
 void ImageSelectWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED( event );
     QPainter painter( this );
-    painter.drawPixmap(0,0,_source->width(),_source->height(),*_source);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
+    painter.drawPixmap(0,0,_source.width(),_source.height(),_source);
     if (_isSelecting)
     {
         QPen pen(Qt::red);
@@ -64,7 +77,7 @@ void ImageSelectWidget::mouseReleaseEvent(QMouseEvent *event)
         w = x1<x2 ? x2-x1 : x1-x2;
         h = y1<y2 ? y2-y1 : y1-y2;
 
-        *_source = _source->copy(x, y, w, h);
+        _source = _source.copy(x, y, w, h);
         this->accept();
     }
 }
