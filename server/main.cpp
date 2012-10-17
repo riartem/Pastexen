@@ -8,9 +8,16 @@
 #include "logger.h"
 #include <QFile>
 
+#ifdef Q_OS_LINUX
+#include <unistd.h>
+#endif
 
 int main(int argc, char** argv)
 {
+    #ifdef Q_OS_LINUX
+    daemon(0, 0);
+    #endif
+
     Application app(argc, argv);
     if (!app.parseArgs())
         return 0;
