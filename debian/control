@@ -1,0 +1,16 @@
+Source: pastexen
+Section: graphics
+Priority: extra
+Maintainer: kakadu <kakadu.hafanana@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), libqxt-gui0, libqxt-core0
+Standards-Version: 3.9.3
+Homepage: https://github.com/bakwc/Pastexen
+Vcs-Git: git://github.com/bakwc/Pastexen.git
+
+Package: pastexen
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: KSnapShot clone. 
+ Allows screenshot, screen-region  and text uploading on the server. All functions
+ has hotkeys.
+  
