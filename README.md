@@ -17,7 +17,7 @@ Pastexen
 ### Сборка
 * Install [Qt 4.6](http://qt.nokia.com/)
 * Install [libqxt-0.6.2](http://dev.libqxt.org/libqxt/get/v0.6.2.zip)
-* git clone git@github.com:bakwc/Pastexen
+* git clone git://github.com/bakwc/Pastexen.git
 * cd Pastexen
 * qmake
 * make
