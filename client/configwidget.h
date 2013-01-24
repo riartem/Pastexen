@@ -20,6 +20,7 @@ protected:
     void closeEvent(QCloseEvent *event);
     void showEvent(QShowEvent *event);
     void hideEvent(QHideEvent *event);
+
 signals:
     void settingsChanged();
     void showSignal(bool b);

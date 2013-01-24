@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 CONFIG   -= console
-QT       += core gui network
+QT       += core gui network gui-private
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = pastexen
@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     ../utils/ucolonsep.cpp \
     ../utils/ucast.cpp \
     ../utils/ukeysequence.cpp \
-    ../utils/uglobalhotkeys.cpp
+    ../utils/uglobalhotkeys.cpp \
+    ../utils/nativeeventfilter.cpp
 
 HEADERS  += \
     application.h \
@@ -47,7 +48,8 @@ HEADERS  += \
     ../utils/ucast.h \
     ../utils/ukeysequence.h \
     ../utils/uglobalhotkey.h \
-    ../utils/uglobalhotkeys.h
+    ../utils/uglobalhotkeys.h \
+    ../utils/nativeeventfilter.h
 
 RESOURCES += \
     resources.qrc
@@ -64,3 +66,7 @@ isEmpty(PREFIX) {
 target.path=$$PREFIX/
 
 QMAKE_CXXFLAGS += -std=c++0x
+
+unix {
+    LIBS += -lxcb-keysyms
+}

@@ -13,7 +13,7 @@ ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &language
     : QWidget(parent),
       _settings(settings),
       _languages(languages),
-      _hotKeys(new UGlobalHotkeys(parent))
+      _hotKeys(new UGlobalHotkeys(new NativeEventFilter))
 {
     _ui.setupUi(this);
 
@@ -30,6 +30,7 @@ ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &language
     connect(_ui.texthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
     connect(_hotKeys, SIGNAL(Activated(size_t)), this, SIGNAL(hotkeyActivated(size_t)));
     registerActualHotkeys();
+
 }
 
 void ConfigWidget::registerActualHotkeys() {
@@ -38,8 +39,8 @@ void ConfigWidget::registerActualHotkeys() {
     QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
 
     _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
-    _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
-    _hotKeys->RegisterHotkey(codeHotkey, HOTKEY_CODE_ID);
+//    _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
+//    _hotKeys->RegisterHotkey(codeHotkey, HOTKEY_CODE_ID);
 }
 
 void ConfigWidget::init()

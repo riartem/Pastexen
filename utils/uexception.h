@@ -3,6 +3,7 @@
 #include <exception>
 #include <QString>
 #include <QByteArray>
+#include <stdexcept>
 
 class UException : public std::exception
 {

@@ -26,6 +26,7 @@ Application::Application(int argc, char *argv[]) :
     , _network(0)
     , _settings(0)
 {
+
 }
 
 Application::~Application()
