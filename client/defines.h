@@ -10,7 +10,7 @@ const QString SETTINGS_FILE =
         ".pastexen.conf";
         #endif
 const QString DEFAULT_HOTKEY_FULL = "F11";
-const QString DEFAULT_HOTKEY_PART = "F10";
+const QString DEFAULT_HOTKEY_PART = "Ctrl+F5";
 const QString DEFAULT_HOTKEY_CODE = "F9";
 const QString DEFAULT_IMAGE_TYPE = "png";
 const QString DEFAULT_SOURCES_TYPE = "txt";

@@ -18,6 +18,11 @@ struct UHotkeyData {
 #endif
 };
 
+struct UKeyData {
+    int key;
+    int mods;
+};
+
 class UGlobalHotkeys;
 
 class NativeEventFilter : public QAbstractNativeEventFilter
@@ -40,6 +45,7 @@ private:
     void linuxEvent(xcb_generic_event_t *message);
     void regLinuxHotkey(const UKeySequence& keySeq, size_t id);
     void unregLinuxHotkey(size_t id);
+    UKeyData qtKeyToLinux(const UKeySequence& keySeq);
 #endif
 
     UGlobalHotkeys *hk;

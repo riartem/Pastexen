@@ -15,7 +15,7 @@ public:
     explicit UKeySequence(QObject *parent = 0);
     explicit UKeySequence(const QString& str, QObject *parent = 0);
     void FromString(const QString& str);
-    QString ToString();
+    QString ToString() const;
     void AddKey(int key);
     void AddKey(const QString& key);
     void AddModifiers(Qt::KeyboardModifiers mod);
@@ -29,9 +29,8 @@ public:
         }
         return Keys[n];
     }
-    QVector<int> GetSimpleKeys();
-    QVector<int> GetModifiers();
+    QVector<int> GetSimpleKeys() const;
+    QVector<int> GetModifiers() const;
 private:
     QVector<int> Keys;
 };
-
