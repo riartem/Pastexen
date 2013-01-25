@@ -13,7 +13,7 @@ ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &language
     : QWidget(parent),
       _settings(settings),
       _languages(languages),
-      _hotKeys(new UGlobalHotkeys(new NativeEventFilter))
+      _hotKeys(new UGlobalHotkeys)
 {
     _ui.setupUi(this);
 
