@@ -43,11 +43,11 @@ public:
 
 private:
 #if defined(Q_OS_WIN)
-    void winEvent (MSG* message, long* result);
+    bool winEvent (MSG* message, long* result);
     void regWinHotkey(const UKeySequence& keySeq, size_t id);
     void unregWinHotkey(size_t id);
 #elif defined(Q_OS_LINUX)
-    void linuxEvent(xcb_generic_event_t *message);
+    bool linuxEvent(xcb_generic_event_t *message);
     void regLinuxHotkey(const UKeySequence& keySeq, size_t id);
     void unregLinuxHotkey(size_t id);
     UKeyData qtKeyToLinux(const UKeySequence& keySeq);

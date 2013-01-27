@@ -16,7 +16,7 @@ NativeEventFilter::NativeEventFilter(UGlobalHotkeys *globalHotkeys) :
 {
 #ifdef Q_OS_LINUX
     QWindow wndw;
-    void* v = qGuiApp->platformNativeInterface()->nativeResourceForWindow("connection", &wndw);
+    void* v = qApp->platformNativeInterface()->nativeResourceForWindow("connection", &wndw);
     c = (xcb_connection_t*)v;
     wId = xcb_setup_roots_iterator(xcb_get_setup(c)).data->root;
     keySyms = xcb_key_symbols_alloc(c);
@@ -33,11 +33,10 @@ NativeEventFilter::~NativeEventFilter()
 bool NativeEventFilter::nativeEventFilter(const QByteArray &eventType, void *message, long *result)
 {
 #if defined(Q_OS_WIN)
-    winEvent(static_cast<MSG*>(message), result);
+    return winEvent(static_cast<MSG*>(message), result);
 #elif defined(Q_OS_LINUX)
-    linuxEvent(static_cast<xcb_generic_event_t*>(message));
+    return linuxEvent(static_cast<xcb_generic_event_t*>(message));
 #endif
-
     return false;
 }
 
@@ -61,14 +60,16 @@ void NativeEventFilter::unregisterHotkey(size_t id)
 
 #if defined(Q_OS_WIN)
 
-void NativeEventFilter::winEvent(MSG *message, long *result)
+bool NativeEventFilter::winEvent(MSG *message, long *result)
 {
     Q_UNUSED(result);
     if (message->message == WM_HOTKEY) {
         size_t id = message->wParam;
         Q_ASSERT(Registered.find(id) != Registered.end() && "Unregistered hotkey");
         emit Activated(id);
+        return true;
     }
+    return false;
 }
 
 void NativeEventFilter::regWinHotkey()
@@ -81,18 +82,21 @@ void NativeEventFilter::unregWinHotkey()
 
 #elif defined(Q_OS_LINUX)
 
-void NativeEventFilter::linuxEvent(xcb_generic_event_t *message)
+bool NativeEventFilter::linuxEvent(xcb_generic_event_t *message)
 {
     if ( (message->response_type & ~0x80) == XCB_KEY_PRESS ) {
         xcb_key_press_event_t *ev = (xcb_key_press_event_t*)message;
         auto ind = Registered.key( {ev->detail, (ev->state & ~XCB_MOD_MASK_2)} );
         emit hk->Activated(ind);
         qDebug() << "KeyEvent";
+        return true;
     }
+    return false;
 }
 
 void NativeEventFilter::regLinuxHotkey(const UKeySequence &keySeq, size_t id)
 {
+    qDebug() << Q_FUNC_INFO;
     UHotkeyData data;
     UKeyData    keyData = qtKeyToLinux(keySeq);
 
@@ -110,6 +114,8 @@ void NativeEventFilter::regLinuxHotkey(const UKeySequence &keySeq, size_t id)
 
 void NativeEventFilter::unregLinuxHotkey(size_t id)
 {
+    qDebug() << Q_FUNC_INFO;
+
     UHotkeyData data = Registered.take(id);
     xcb_ungrab_key(c, data.keyCode, wId, data.mods);
     xcb_ungrab_key(c, data.keyCode, wId, data.mods | XCB_MOD_MASK_2);
