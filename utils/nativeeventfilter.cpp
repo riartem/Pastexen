@@ -87,6 +87,7 @@ void NativeEventFilter::linuxEvent(xcb_generic_event_t *message)
         xcb_key_press_event_t *ev = (xcb_key_press_event_t*)message;
         auto ind = Registered.key( {ev->detail, (ev->state & ~XCB_MOD_MASK_2)} );
         emit hk->Activated(ind);
+        qDebug() << "KeyEvent";
     }
 }
 

@@ -25,6 +25,7 @@ Application::Application(int argc, char *argv[]) :
     , _trayIconMenu(0)
     , _network(0)
     , _settings(0)
+    , _hotKeys(new UGlobalHotkeys(this))
 {
 
 }
@@ -62,7 +63,7 @@ bool Application::pxAppInit()
 
     _configWidget = new ConfigWidget(_settings, _languages);
     connect(_configWidget, SIGNAL(settingsChanged()), SLOT(setupHotkeys()));
-    connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
+//    connect(_configWidget, SIGNAL(hotkeyActivated(size_t)), SLOT(hotkeyPressed(size_t)));
 
     _configWidget->init();
 
@@ -76,6 +77,7 @@ bool Application::pxAppInit()
     _trayIconMenu->addAction(tr("Exit"), this, SLOT(quit()));                   // Tray menu
 
     setupHotkeys();
+    connect(_hotKeys, &UGlobalHotkeys::Activated, this, &Application::hotkeyPressed);
 
     _trayIcon = new QSystemTrayIcon(QIcon(":/icons/icon.png"), this);
     connect(_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
@@ -176,7 +178,9 @@ void Application::linkAvaliable(const QString &link)
 void Application::aboutDialog()
 {
     QMessageBox::information(NULL, APP_NAME,
-                             tr("Utility for easy screenshoting and code sharing<br> We live at <a href=\"http://pastexen.com/\">pastexen.com</a><br> Hosting provided by <a href=\"http://scalaxy.ru/\">scalaxy.ru</a>"));
+                             tr("Utility for easy screenshoting and code sharing<br>"
+                                "We live at <a href=\"http://pastexen.com/\">pastexen.com</a><br>"
+                                "Hosting provided by <a href=\"http://scalaxy.ru/\">scalaxy.ru</a>"));
 }
 
 void Application::setupHotkeys()
@@ -189,6 +193,10 @@ void Application::setupHotkeys()
     actsList[1]->setText(tr("Text share (%1)").arg(codeHotkey));
     actsList[2]->setText(tr("Full s-shot (%1)").arg(fullHotkey));
     actsList[3]->setText(tr("Half s-shot (%1)").arg(partHotkey));
+
+    _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
+    _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
+    _hotKeys->RegisterHotkey(codeHotkey, HOTKEY_CODE_ID);
 }
 
 void Application::initLanguages()

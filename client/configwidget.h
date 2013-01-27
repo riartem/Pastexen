@@ -5,8 +5,6 @@
 #include <QSettings>
 #include <QMap>
 
-#include "../utils/uglobalhotkeys.h"
-
 #include "ui_config.h"
 
 class ConfigWidget : public QWidget
@@ -34,5 +32,4 @@ private:
     Ui::ConfigForm _ui;
     QSettings *_settings;
     QMap<QString, QString> &_languages;
-    UGlobalHotkeys* _hotKeys;
 };

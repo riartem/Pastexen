@@ -12,8 +12,7 @@
 ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &languages, QWidget *parent)
     : QWidget(parent),
       _settings(settings),
-      _languages(languages),
-      _hotKeys(new UGlobalHotkeys)
+      _languages(languages)
 {
     _ui.setupUi(this);
 
@@ -28,8 +27,8 @@ ConfigWidget::ConfigWidget(QSettings *settings, QMap<QString, QString> &language
     connect(_ui.fullhotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
     connect(_ui.parthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
     connect(_ui.texthotkey, SIGNAL(clicked()), this, SLOT(changeHotkey()));
-    connect(_hotKeys, SIGNAL(Activated(size_t)), this, SIGNAL(hotkeyActivated(size_t)));
-    registerActualHotkeys();
+//    connect(_hotKeys, SIGNAL(Activated(size_t)), this, SIGNAL(hotkeyActivated(size_t)));
+//    registerActualHotkeys();
 
 }
 
@@ -38,7 +37,7 @@ void ConfigWidget::registerActualHotkeys() {
     QString partHotkey = _settings->value("general/parthotkey", DEFAULT_HOTKEY_PART).toString();
     QString codeHotkey = _settings->value("general/texthotkey", DEFAULT_HOTKEY_CODE).toString();
 
-    _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
+//    _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
 //    _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
 //    _hotKeys->RegisterHotkey(codeHotkey, HOTKEY_CODE_ID);
 }
@@ -109,12 +108,12 @@ void ConfigWidget::hideEvent(QHideEvent *event)
 
 void ConfigWidget::applyChanges()
 {
-    emit settingsChanged();
     _settings->setValue("general/imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
     _settings->setValue("general/sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
     _settings->setValue("general/showsourcedialog", _ui.checkBoxLangDialogShow->isChecked());
     _settings->sync();
     this->hide();
+    emit settingsChanged();
 }
 
 void ConfigWidget::changeHotkey()
@@ -131,7 +130,7 @@ void ConfigWidget::changeHotkey()
 
             b->setText(dial.key());
 
-            registerActualHotkeys();
+//            registerActualHotkeys();
         }
     }
 }

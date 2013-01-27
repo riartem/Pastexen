@@ -8,6 +8,7 @@
 #include <QLocalServer>
 #include "configwidget.h"
 #include "network.h"
+#include "../utils/uglobalhotkeys.h"
 
 class Application : public QApplication
 {
@@ -41,12 +42,13 @@ private:
     void initLanguages();
     bool checkEllapsed();
 private:
-    ConfigWidget *_configWidget;
-    QSystemTrayIcon *_trayIcon;
-    QMenu *_trayIconMenu;
-    Network *_network;
-    QSettings *_settings;
+    ConfigWidget        *_configWidget;
+    QSystemTrayIcon     *_trayIcon;
+    QMenu               *_trayIconMenu;
+    Network             *_network;
+    QSettings           *_settings;
     QMap<QString, QString> _languages;
-    QLocalServer *_localServer;
-    QTime _lastSended;
+    QLocalServer        *_localServer;
+    QTime               _lastSended;
+    UGlobalHotkeys      *_hotKeys;
 };
