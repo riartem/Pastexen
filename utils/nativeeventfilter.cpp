@@ -9,22 +9,25 @@
 #include "winhotkeymap.h"
 #elif defined(Q_OS_LINUX)
 #include "X11/keysym.h"
-#include "xcb/xcb_keysyms.h"
 #endif
 
 NativeEventFilter::NativeEventFilter(UGlobalHotkeys *globalHotkeys) :
     hk(globalHotkeys)
 {
 #ifdef Q_OS_LINUX
-//    QWindow wndw;
-    void* v = qGuiApp->platformNativeInterface()->nativeResourceForWindow("connection", new QWindow);
+    QWindow wndw;
+    void* v = qGuiApp->platformNativeInterface()->nativeResourceForWindow("connection", &wndw);
     c = (xcb_connection_t*)v;
     wId = xcb_setup_roots_iterator(xcb_get_setup(c)).data->root;
+    keySyms = xcb_key_symbols_alloc(c);
 #endif
 }
 
 NativeEventFilter::~NativeEventFilter()
 {
+#ifdef Q_OS_LINUX
+    xcb_key_symbols_free(keySyms);
+#endif
 }
 
 bool NativeEventFilter::nativeEventFilter(const QByteArray &eventType, void *message, long *result)
@@ -80,17 +83,15 @@ void NativeEventFilter::unregWinHotkey()
 
 void NativeEventFilter::linuxEvent(xcb_generic_event_t *message)
 {
-    qDebug() << Q_FUNC_INFO;
-
     if ( (message->response_type & ~0x80) == XCB_KEY_PRESS ) {
-        fprintf(stderr, "KeyEvent\n");
+        xcb_key_press_event_t *ev = (xcb_key_press_event_t*)message;
+        auto ind = Registered.key( {ev->detail, (ev->state & ~XCB_MOD_MASK_2)} );
+        emit hk->Activated(ind);
     }
 }
 
 void NativeEventFilter::regLinuxHotkey(const UKeySequence &keySeq, size_t id)
 {
-    static xcb_key_symbols_t* keySyms = xcb_key_symbols_alloc(c);
-
     UHotkeyData data;
     UKeyData    keyData = qtKeyToLinux(keySeq);
 
@@ -100,6 +101,8 @@ void NativeEventFilter::regLinuxHotkey(const UKeySequence &keySeq, size_t id)
     data.mods = keyData.mods;
 
     xcb_grab_key(c, 1, wId, data.mods, data.keyCode, XCB_GRAB_MODE_ASYNC, XCB_GRAB_MODE_ASYNC);
+    // NumLk
+    xcb_grab_key(c, 1, wId, data.mods | XCB_MOD_MASK_2, data.keyCode,XCB_GRAB_MODE_ASYNC, XCB_GRAB_MODE_ASYNC);
 
     Registered.insert(id, data);
 }
@@ -108,6 +111,7 @@ void NativeEventFilter::unregLinuxHotkey(size_t id)
 {
     UHotkeyData data = Registered.take(id);
     xcb_ungrab_key(c, data.keyCode, wId, data.mods);
+    xcb_ungrab_key(c, data.keyCode, wId, data.mods | XCB_MOD_MASK_2);
 }
 
 UKeyData NativeEventFilter::qtKeyToLinux(const UKeySequence &keySeq)
@@ -134,17 +138,15 @@ UKeyData NativeEventFilter::qtKeyToLinux(const UKeySequence &keySeq)
     // Modifiers conversion
     auto mods = keySeq.GetModifiers();
 
-    if (mods.size()) {
-        const int i = mods[0];
-
-        if (i & Qt::SHIFT || i == Qt::Key_Shift)
+    for (auto i : mods) {
+        if (i == Qt::Key_Shift)
             data.mods |= XCB_MOD_MASK_SHIFT;
-        if (i & Qt::CTRL || i == Qt::Key_Control)
+        else if (i == Qt::Key_Control)
             data.mods |= XCB_MOD_MASK_CONTROL;
-        if (i & Qt::ALT || i == Qt::Key_Alt)
-            data.mods |= 0; // !
-        if (i & Qt::META || i == Qt::Key_Meta)
-            data.mods |= 0; // !
+        else if (i == Qt::Key_Alt)
+            data.mods |= XCB_MOD_MASK_1;
+        else if (i == Qt::Key_Meta)
+            data.mods |= XCB_MOD_MASK_4; // !
     }
 
     return data;

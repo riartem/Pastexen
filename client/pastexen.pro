@@ -49,7 +49,8 @@ HEADERS  += \
     ../utils/ukeysequence.h \
     ../utils/uglobalhotkey.h \
     ../utils/uglobalhotkeys.h \
-    ../utils/nativeeventfilter.h
+    ../utils/nativeeventfilter.h \
+    ../utils/udebug.h
 
 RESOURCES += \
     resources.qrc

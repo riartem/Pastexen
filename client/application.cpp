@@ -44,6 +44,9 @@ bool Application::pxAppInit()
         qDebug() << "Application allready launched!";
         return false;
     }
+
+    _lastSended.start();
+
     _localServer = new QLocalServer(this);
 
     if (!_localServer->listen(APP_NAME)) {
@@ -81,6 +84,7 @@ bool Application::pxAppInit()
 
     _network = new Network(_settings, this);
     connect(_network, SIGNAL(linkReceived(QString)), SLOT(linkAvaliable(QString)));     // Network
+    connect(_network, SIGNAL(trayMessage(QString,QString)), SLOT(trayMessage(QString,QString)));
 
     this->setQuitOnLastWindowClosed(false);
 
@@ -96,8 +100,16 @@ void Application::newLocalSocketConnection()
 {
 }
 
+void Application::trayMessage(const QString &caption, const QString &text)
+{
+    _trayIcon->showMessage(caption, text, QSystemTrayIcon::Information, 6500);
+}
+
 void Application::processScreenshot(bool isFullScreen)
 {
+    if (!checkEllapsed()) {
+        return;
+    }
     QPixmap pixmap = QGuiApplication::primaryScreen()->grabWindow(0);
     if (!isFullScreen) {
         ImageSelectWidget imageSelectDialog(&pixmap);
@@ -118,6 +130,10 @@ void Application::processScreenshot(bool isFullScreen)
 
 void Application::processCodeShare()
 {
+    if (!checkEllapsed()) {
+        return;
+    }
+
     bool showsourcedialog = _settings->value("general/showsourcedialog", DEFAULT_SHOW_SOURCES_CONF_DIALOG).toBool();
     if (showsourcedialog) {
         LanguageSelectDialog dialog(_settings, _languages);
@@ -180,6 +196,7 @@ void Application::initLanguages()
     _languages.insert("txt", "Plain text");
     _languages.insert("c", "C");
     _languages.insert("cpp", "C++");
+    _languages.insert("cs", "C#");
     _languages.insert("java", "Java");
     _languages.insert("php", "PHP");
     _languages.insert("py", "Python");
@@ -203,4 +220,13 @@ void Application::initLanguages()
     _languages.insert("bat", "Dos (bat)");
     _languages.insert("cmake", "CMake");
     _languages.insert("hs", "Haskell");
+}
+
+bool Application::checkEllapsed()
+{
+    if (_lastSended.elapsed() < 3000) {
+        return false;
+    }
+    _lastSended.restart();
+    return true;
 }

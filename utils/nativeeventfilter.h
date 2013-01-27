@@ -7,6 +7,7 @@
 
 #if defined(Q_OS_LINUX)
 #include "xcb/xcb.h"
+#include "xcb/xcb_keysyms.h"
 #endif
 
 struct UHotkeyData {
@@ -15,6 +16,10 @@ struct UHotkeyData {
 #elif defined(Q_OS_LINUX)
     xcb_keycode_t       keyCode;
     int                 mods;
+    bool operator ==(const UHotkeyData& data) const {
+        return data.keyCode == this->keyCode && data.mods == this->mods;
+    }
+
 #endif
 };
 
@@ -53,6 +58,7 @@ private:
 #ifdef Q_OS_LINUX
     xcb_connection_t    *c;
     xcb_window_t        wId;
+    xcb_key_symbols_t   *keySyms;
 #endif
 
     QHash<size_t, UHotkeyData> Registered;

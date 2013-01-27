@@ -2,7 +2,7 @@
 #if defined(Q_OS_WIN)
 #include <windows.h>
 #include "winhotkeymap.h"
-#else defined(Q_OS_LINUX)
+#elif defined(Q_OS_LINUX)
 #include "xcb/xcb_keysyms.h"
 #include "X11/keysym.h"
 #endif
