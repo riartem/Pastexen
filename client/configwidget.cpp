@@ -108,6 +108,9 @@ void ConfigWidget::hideEvent(QHideEvent *event)
 
 void ConfigWidget::applyChanges()
 {
+    _settings->setValue("general/fullhotkey", _ui.fullhotkey->text());
+    _settings->setValue("general/parthotkey", _ui.parthotkey->text());
+    _settings->setValue("general/texthotkey", _ui.texthotkey->text());
     _settings->setValue("general/imagetype", _ui.comboImageType->itemData(_ui.comboImageType->currentIndex()).toString());
     _settings->setValue("general/sourcetype", _ui.comboSourcesType->itemData(_ui.comboSourcesType->currentIndex()).toString());
     _settings->setValue("general/showsourcedialog", _ui.checkBoxLangDialogShow->isChecked());

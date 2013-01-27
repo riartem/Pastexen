@@ -87,8 +87,12 @@ bool NativeEventFilter::linuxEvent(xcb_generic_event_t *message)
     if ( (message->response_type & ~0x80) == XCB_KEY_PRESS ) {
         xcb_key_press_event_t *ev = (xcb_key_press_event_t*)message;
         auto ind = Registered.key( {ev->detail, (ev->state & ~XCB_MOD_MASK_2)} );
+
+        if (ind == 0) // this is not hotkeys
+            return false;
+
         emit hk->Activated(ind);
-        qDebug() << "KeyEvent";
+        qDebug() << "KeyEvent" << ind;
         return true;
     }
     return false;

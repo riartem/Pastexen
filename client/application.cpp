@@ -194,6 +194,9 @@ void Application::setupHotkeys()
     actsList[2]->setText(tr("Full s-shot (%1)").arg(fullHotkey));
     actsList[3]->setText(tr("Half s-shot (%1)").arg(partHotkey));
 
+    _hotKeys->UnregisterHotkey(HOTKEY_FULL_ID);
+    _hotKeys->UnregisterHotkey(HOTKEY_PART_ID);
+    _hotKeys->UnregisterHotkey(HOTKEY_CODE_ID);
     _hotKeys->RegisterHotkey(fullHotkey, HOTKEY_FULL_ID);
     _hotKeys->RegisterHotkey(partHotkey, HOTKEY_PART_ID);
     _hotKeys->RegisterHotkey(codeHotkey, HOTKEY_CODE_ID);
